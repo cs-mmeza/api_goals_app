@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var goalsRouter = require('./routes/goals');
+var accountsRouter = require('./routes/accounts');
+var { expressjwt: jwt } = require("express-jwt");
 
 var app = express();
 
@@ -14,9 +16,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  jwt({
+    secret: "secret",
+    algorithms: ["HS256"],
+  }).unless({ path: ["/api/signup", "/api/login"] })
+);
 
 app.use('/', indexRouter);
 app.use('/api/goals', goalsRouter);
+app.use('/api', accountsRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

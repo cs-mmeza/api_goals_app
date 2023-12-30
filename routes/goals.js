@@ -5,7 +5,7 @@ const {body, validatorResult, validationResult} = require('express-validator');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  requestAll('goals', (err, goals) => {
+  requestAll('goals', req.auth.id, (err, goals) => {
     if(err){
       return next(err);
     }
@@ -59,7 +59,7 @@ function(req, res, next) {
 
   const body = req.body;
   const id = req.params.id;
-  if(body.id !== id){
+  if(body.id != id){
     return res.sendStatus(409); 
   }
   requestOne('goals', id, (err, goal) => {

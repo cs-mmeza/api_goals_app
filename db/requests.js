@@ -1,7 +1,7 @@
 const db = require('./config')
 
-function requestAll(table, callback) {
-    db.any(`SELECT * FROM ${table}`)
+function requestAll(table, account_id, callback) {
+    db.any(`SELECT * FROM ${table} WHERE account_id = ${account_id}`)
         .then(result => {
             callback(null, result);
         })
@@ -12,6 +12,16 @@ function requestAll(table, callback) {
 
 function requestOne(table, id, callback) {
     db.any(`SELECT * FROM ${table} WHERE id = ${id}`)
+        .then(result => {
+            callback(null, result);
+        })
+        .catch(error => {
+            callback(error);
+        });
+}
+
+function requestAccount(username, callback) {
+    db.any(`SELECT * FROM accounts WHERE username = '${username}'`)
         .then(result => {
             callback(null, result);
         })
@@ -58,7 +68,13 @@ function remove(table, id, callback) {
         });
 }
 
-module.exports = {requestAll, requestOne, create, update, remove};
+module.exports = {
+    requestAll, 
+    requestOne,
+    requestAccount, 
+    create, 
+    update, 
+    remove};
 
 
 // db.one('SELECT $1 AS value', 123)
